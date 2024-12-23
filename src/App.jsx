@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/Auth/ProtectedRoute';
 import MainLayout from './components/Layout/MainLayout';
 import PublicLayout from './components/Layout/PublicLayout';
@@ -14,7 +14,7 @@ import Pricing from './pages/public/Pricing';
 
 function App() {
   return (
-    <useAuth>
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           {/* Public Routes */}
@@ -45,7 +45,7 @@ function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </useAuth>
+    </AuthProvider>
   );
 }
 
