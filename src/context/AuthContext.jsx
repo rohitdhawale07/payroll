@@ -22,28 +22,32 @@ export const AuthProvider = ({ children }) => {
         },
         body: JSON.stringify({ email, password }),
       });
-
+  
+      // Check for response.ok to handle failure scenarios
       if (!response.ok) {
-        throw new Error('Failed to login');
+        const errorData = await response.json();
+        throw new Error(errorData?.message || 'Failed to login');
       }
-
+  
       const data = await response.json();
-
-      // Assuming the API response includes user info (email, role, etc.)
-      setAuth({
-        isAuthenticated: true,
-        user: data, // Adjust based on your API response structure
-      });
-
-      // Optional: Handle token if provided
-      if (data.token) {
-        localStorage.setItem('authToken', data.token);
+  
+      // Ensure the response contains the necessary data
+      if (data && data.token) {
+        setAuth({
+          isAuthenticated: true,
+          user: data.user || null,
+        });
+  
+        localStorage.setItem('authToken', data.token); // Store token
+      } else {
+        throw new Error('Invalid response format');
       }
     } catch (error) {
       console.error('Login error:', error);
-      throw new Error('Invalid credentials or server error');
+      throw error; // This will allow the error to be caught in the Login component
     }
   };
+  
 
   const logout = () => {
     setAuth({ isAuthenticated: false, user: null });
